@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LazyOSINT</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            margin-top: 80px;
+            padding: 20px;
+        }
+        .nav-bar {
+            background-color: #333;
+            /* padding: 10px 20px; */
+            padding: 6px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-sizing: border-box;
+        }
+        .nav-bar a {
+            color: #ffffff;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        .nav-bar a:hover {
+            text-decoration: underline;
+        }
+        .nav-title {
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+        .nav-title span {
+            font-size: 0.8em;
+            font-weight: normal;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+        }
+        .nav-end {
+            display: flex;
+            align-items: center;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            border: 1px solid #555;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 1.1em;
+            background-color: #121212;
+            color: #ffffff;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        input[type="text"]:not(:placeholder-shown) {
+            background-color: #7600fd17;
+        }
+        .section {
+            margin-bottom: 60px;
+            padding: 4px 20px;
+            border: 1px solid #444;
+            border-radius: 8px;
+            scroll-margin-top: 100px;
+            background-color: #222;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .subsection {
+            margin-bottom: 20px;
+            padding: 20px;
+            border: 1px solid #555;
+            border-radius: 8px;
+            background-color: #121212;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .subsection-heading {
+            display: flex;
+            justify-content: space-between;
+        }
+        .subsection-heading h3 {
+            margin: 0px;
+        }
+        .buttons span {
+            font-weight: normal; 
+            font-size: 1em; 
+            color: #888;
+            margin-top: 2px;
+        }
+        .subsection-heading .buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .open-all-button, .copy-button {
+            font-size: 1.6em;
+            padding: 1px;
+            padding-top: 0;
+            padding-bottom: 2px;
+        }
+        .source-list button {
+            padding: 0;
+            font-size: 1.1em;
+        }
+        .source-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 0;
+            border-top: 1px solid #444;
+            padding-top: 12px;
+            margin-top: 12px;
+        }
+        .source-list button, .open-all-button, .copy-button {
+            background-color: #444;
+            color: #fff;
+            border: 1px solid #777;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        .source-list button:hover, .open-all-button:hover, .copy-button:hover {
+            background-color: #555;
+        }
+        .source-list button a {
+            color: inherit;
+            text-decoration: none;
+            flex: 1;
+            display: block;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            line-height: 2;
+            padding: 0px 14px;
+        }
+        .source-list button .pin-button {
+            border: none;
+            border-left: 1px solid #777;
+            cursor: pointer;
+            width: 36px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-weight: bold;
+        }
+        .pin-button.plus:hover {
+            background-color: #20492063;
+        }
+        .pin-button.minus:hover {
+            background-color: #634848a2;
+        }
+        .pin-button.plus::before {
+            content: '+';
+        }
+        .pin-button.minus::before {
+            content: '−';
+        }
+        .pin-button.minus {
+            background-color: #555;
+        }
+        .toggle-mode::before, .light-mode .toggle-mode:hover::before {
+            content: '🌃';
+        }
+        .light-mode .toggle-mode::before, .toggle-mode:hover::before {
+            content: '🌇';
+        }
+        .toggle-mode {
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            background: none;
+            font-size: 1.8em;
+        }
+        .light-mode {
+            background-color: #ffffff;
+            color: #000000;
+        }
+        .light-mode .nav-bar {
+            background-color: #fff;
+            color: #000;
+
+            border-bottom: 1px solid #bbb;
+        }
+        .light-mode .nav-bar a {
+            color: #000;
+        }
+        .light-mode .subsection, .light-mode input[type="text"] {
+            background-color: #fff;
+            color: #000;
+        }
+        .light-mode input[type="text"]:not(:placeholder-shown) {
+            background-color: #7b00ff11;
+        }
+        .light-mode .section {
+            background-color: #f5f5f5;
+        }
+        .light-mode .source-list button .pin-button {
+            color: #aaa;
+        }
+        .light-mode .pin-button.minus {
+            background-color: #ddd;
+        }
+        .light-mode .pin-button.plus:hover {
+            background-color: #6ae07a27;
+        }
+        .light-mode .pin-button.minus:hover {
+            background-color: #dd8f8f34;
+        }
+        .light-mode .source-list button, .light-mode .open-all-button, .light-mode .copy-button {
+            background-color: #eee;
+            color: #000;
+        }
+        .light-mode .source-list button:hover, .light-mode .open-all-button:hover, .light-mode .copy-button:hover {
+            background-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-bar">
+        <div class="nav-title">
+            LazyOSINT 
+            <span>| URL Generator</span>
+        </div>
+        <div class="nav-links">
+            <a href="#ip-section">IP Address</a>
+            <a href="#domain-section">Domain / URL</a>
+            <a href="#hash-section">File Hash</a>
+            <a href="#quick-links-section">Quick Links</a>
+        </div>
+        <div class="nav-end">
+            <button class="toggle-mode" title="Toggle Light/Dark Mode" onclick="toggleMode()"></button>
+        </div>
+    </div>
+    <div class="container">
+        <div class="section" id="ip-section">
+            <h2>IP Address</h2>
+            <input type="text" id="ip-input" placeholder="Enter an IP Address (e.g. 1.1.1.1 or 8.8.8.8) ..." oninput="updateLinks('ip')">
+            <div class="subsection" id="ip-pinned">
+                <div class="subsection-heading">
+                    <h3>Pinned</h3>
+                    <div class="buttons">
+                        <span id="ip-no-pinned-message">No pinned sources</span>
+                        <button class="open-all-button" id="ip-open-all-pinned" onclick="openAll('ip', 'pinned')" title="Open pinned sources (in new tabs)">&#x1F50E;</button>
+                        <button class="copy-button" id="ip-copy-pinned" onclick="copyAll('ip', 'pinned')" title="Copy pinned sources to clipboard">&#x1F4CB;</button>
+                    </div>
+                </div>
+                <div class="source-list" id="ip-pinned-list"></div>
+            </div>
+            <div class="subsection" id="ip-all">
+                <div class="subsection-heading">
+                    <h3>All</h3>
+                    <div class="buttons">
+                        <button class="open-all-button" onclick="openAll('ip', 'all')" title="Open all sources (in new tabs)">&#x1F50E;</button>
+                        <button class="copy-button" onclick="copyAll('ip', 'all')" title="Copy all sources to clipboard">&#x1F4CB;</button>
+                    </div>
+                </div>
+                <div class="source-list" id="ip-all-list"></div>
+            </div>
+        </div>
+        <div class="section" id="domain-section">
+            <h2>Domain / URL</h2>
+            <input type="text" id="domain-input" placeholder="Enter a Domain or URL (e.g. https://example.com or https://example.com/example) ..." oninput="updateLinks('domain')">
+            <div class="subsection" id="domain-pinned">
+                <div class="subsection-heading">
+                    <h3>Pinned</h3>
+                    <div class="buttons">
+                        <span id="domain-no-pinned-message">No pinned sources</span>
+                        <button class="open-all-button" id="domain-open-all-pinned" onclick="openAll('domain', 'pinned')" title="Open pinned sources (in new tabs)">&#x1F50E;</button>
+                        <button class="copy-button" id="domain-copy-pinned" onclick="copyAll('domain', 'pinned')" title="Copy pinned sources to clipboard">&#x1F4CB;</button>
+                    </div>
+                </div>
+                <div class="source-list" id="domain-pinned-list"></div>
+            </div>
+            <div class="subsection" id="domain-all">
+                <div class="subsection-heading">
+                    <h3>All</h3>
+                    <div class="buttons">
+                        <button class="open-all-button" onclick="openAll('domain', 'all')" title="Open all sources (in new tabs)">&#x1F50E;</button>
+                        <button class="copy-button" onclick="copyAll('domain', 'all')" title="Copy all sources to clipboard">&#x1F4CB;</button>
+                    </div>
+                </div>
+                <div class="source-list" id="domain-all-list"></div>
+            </div>
+        </div>
+        <div class="section" id="hash-section">
+            <h2>File Hash</h2>
+            <input type="text" id="hash-input" placeholder="Enter a File Hash (MD5, SHA-1, or SHA-256) ..." oninput="updateLinks('hash')">
+            <div class="subsection" id="hash-pinned">                
+                <div class="subsection-heading">
+                    <h3>Pinned</h3>
+                    <div class="buttons">
+                        <span id="hash-no-pinned-message">No pinned sources</span>
+                        <button class="open-all-button" id="hash-open-all-pinned" onclick="openAll('hash', 'pinned')" title="Open pinned sources (in new tabs)">&#x1F50E;</button>
+                        <button class="copy-button" id="hash-copy-pinned" onclick="copyAll('hash', 'pinned')" title="Copy pinned sources to clipboard">&#x1F4CB;</button>
+                    </div>
+                </div>
+                <div class="source-list" id="hash-pinned-list"></div>
+            </div>
+            <div class="subsection" id="hash-all">
+                <div class="subsection-heading">
+                    <h3>All</h3>
+                    <div class="buttons">
+                        <button class="open-all-button" onclick="openAll('hash', 'all')" title="Open all sources (in new tabs)">&#x1F50E;</button>
+                        <button class="copy-button" onclick="copyAll('hash', 'all')" title="Copy all sources to clipboard">&#x1F4CB;</button>
+                    </div>
+                </div>
+                <div class="source-list" id="hash-all-list"></div>
+            </div>
+        </div>
+        <div class="section" id="quick-links-section">
+            <h2>Quick Links</h2>
+            <div class="subsection">
+                <div class="subsection-heading">
+                    <h3>All</h3>
+                </div>
+                <div class="source-list" id="quick-links-list"></div>
+            </div>
+        </div>
+    </div>
+    <script>
+
+        const sources = {
+            ip: [
+                { name: 'AbuseIPDB', url: 'https://www.abuseipdb.com/check/', defaulturl: 'https://www.abuseipdb.com/' },
+                { name: 'AlienVault OTX', url: 'https://otx.alienvault.com/indicator/ip/', defaulturl: 'https://otx.alienvault.com/' },
+                { name: 'APNIC', url: 'https://wq.apnic.net/static/search.html?query=', defaulturl: 'https://wq.apnic.net/' },
+                { name: 'BGPView', url: 'https://bgpview.io/ip/', defaulturl: 'https://bgpview.io/' },
+                { name: 'Browserling', url: 'https://www.browserling.com/browse/win10/chrome127/', defaulturl: 'https://www.browserling.com/' },
+                { name: 'Censys', url: 'https://search.censys.io/hosts/', defaulturl: 'https://search.censys.io/' },
+                { name: 'DNSlytics', url: 'https://dnslytics.com/ip/', defaulturl: 'https://dnslytics.com/' },
+                { name: 'Google Search', url: 'https://www.google.com/search?q=site%3A', defaulturl: 'https://www.google.com' },
+                { name: 'Google Transparency Report', url: 'https://transparencyreport.google.com/safe-browsing/search?url=', defaulturl: 'https://transparencyreport.google.com/safe-browsing/search' },
+                { name: 'GreyNoise', url: 'https://viz.greynoise.io/ip/', defaulturl: 'https://viz.greynoise.io/' },
+                { name: 'IP2Location', url: 'https://www.ip2location.com/demo/', defaulturl: 'https://www.ip2location.com/' },
+                { name: 'IPinfo', url: 'https://ipinfo.io/', defaulturl: 'https://ipinfo.io/' },
+                { name: 'IPQualityScore', url: 'https://www.ipqualityscore.com/free-ip-lookup-proxy-vpn-test/lookup/', defaulturl: 'https://www.ipqualityscore.com/free-ip-lookup-proxy-vpn-test' },
+                { name: 'IPVoid', url: 'https://www.ipvoid.com/scan/', defaulturl: 'https://www.ipvoid.com/' },
+                { name: 'Shodan', url: 'https://www.shodan.io/host/', defaulturl: 'https://www.shodan.io'},
+                { name: 'Talos', url: 'https://talosintelligence.com/reputation_center/lookup?search=', defaulturl: 'https://talosintelligence.com' },
+                { name: 'ThreatMiner', url: 'https://www.threatminer.org/host.php?q=', defaulturl: 'https://www.threatminer.org/' },
+                { name: 'URLVoid', url: 'https://www.urlvoid.com/ip/', defaulturl: 'https://www.urlvoid.com/' },
+                { name: 'Valkyrie', url: 'https://verdict.valkyrie.comodo.com/url/ip/result?ip=', defaulturl: 'https://verdict.valkyrie.comodo.com/' },
+                { name: 'VirusTotal', url: 'https://www.virustotal.com/gui/ip-address/', defaulturl: 'https://www.virustotal.com/gui/home/search' },
+                { name: 'Whois', url: 'https://www.whois.com/whois/', defaulturl: 'https://www.whois.com/whois/' },
+                { name: 'X-Force Exchange', url: 'https://exchange.xforce.ibmcloud.com/ip/', defaulturl: 'https://exchange.xforce.ibmcloud.com/' }
+            ],
+            domain: [
+                { name: 'AbuseIPDB', url: 'https://www.abuseipdb.com/check/', defaulturl: 'https://www.abuseipdb.com/' },
+                { name: 'AlienVault OTX', url: 'https://otx.alienvault.com/indicator/domain/', defaulturl: 'https://otx.alienvault.com/' },
+                { name: 'Browserling', url: 'https://www.browserling.com/browse/win10/chrome127/', defaulturl: 'https://www.browserling.com/' },
+                { name: 'DNSlytics', url: 'https://dnslytics.com/domain/', defaulturl: 'https://dnslytics.com/' },
+                { name: 'DomainTools', url: 'https://whois.domaintools.com/', defaulturl: 'https://whois.domaintools.com/' },
+                { name: 'Google Search', url: 'https://www.google.com/search?q=site%3A', defaulturl: 'https://www.google.com' },
+                { name: 'Google Transparency Report', url: 'https://transparencyreport.google.com/safe-browsing/search?url=', defaulturl: 'https://transparencyreport.google.com/safe-browsing/search' },
+                { name: 'IPQualityScore', url: 'https://www.ipqualityscore.com/domain-reputation/', defaulturl: 'https://www.ipqualityscore.com/domain-reputation' },
+                { name: 'SecurityTrails', url: 'https://securitytrails.com/domain/', defaulturl: 'https://securitytrails.com/' },
+                { name: 'Shodan', url: 'https://www.shodan.io/domain/', defaulturl: 'https://www.shodan.io'},
+                { name: 'Talos', url: 'https://talosintelligence.com/reputation_center/lookup?search=', defaulturl: 'https://talosintelligence.com' },
+                { name: 'ThreatMiner', url: 'https://www.threatminer.org/domain.php?q=', defaulturl: 'https://www.threatminer.org/' },
+                { name: 'URLScan.io', url: 'https://urlscan.io/domain/', defaulturl: 'https://urlscan.io' },
+                { name: 'Valkyrie', url: 'https://verdict.valkyrie.comodo.com/url/domain/result?domain=', defaulturl: 'https://verdict.valkyrie.comodo.com/' },
+                { name: 'VirusTotal', url: 'https://www.virustotal.com/gui/domain/', defaulturl: 'https://www.virustotal.com/gui/home/search' },
+                { name: 'Web of Trust', url: 'https://www.mywot.com/en/scorecard/', defaulturl: 'https://www.mywot.com/' },
+                { name: 'Whois', url: 'https://www.whois.com/whois/', defaulturl: 'https://www.whois.com/whois/' },
+                { name: 'WhoisXML API', url: 'https://whois.whoisxmlapi.com/lookup/', defaulturl: 'https://whois.whoisxmlapi.com/' },
+                { name: 'X-Force Exchange', url: 'https://exchange.xforce.ibmcloud.com/url/', defaulturl: 'https://exchange.xforce.ibmcloud.com/' }
+            ],
+            hash: [
+                { name: 'Any.Run', url: 'https://app.any.run/submissions/sample/', defaulturl: 'https://app.any.run/' },
+                { name: 'Cuckoo Sandbox', url: 'https://cuckoosandbox.org/sample/', defaulturl: 'https://cuckoosandbox.org/' },
+                { name: 'Google Search', url: 'https://www.google.com/search?q=', defaulturl: 'https://www.google.com' },
+                { name: 'Hybrid Analysis', url: 'https://www.hybrid-analysis.com/sample/', defaulturl: 'https://www.hybrid-analysis.com' },
+                { name: 'Joe Sandbox', url: 'https://www.joesandbox.com/search?q=', defaulturl: 'https://www.joesandbox.com/' },
+                { name: 'Malprob', url: 'https://malprob.io/report/', defaulturl: 'https://malprob.io/' },
+                { name: 'MalShare', url: 'https://malshare.com/sample.php?hash=', defaulturl: 'https://malshare.com/' },
+                { name: 'MalwareBazaar', url: 'https://bazaar.abuse.ch/sample/', defaulturl: 'https://bazaar.abuse.ch' },
+                { name: 'MetaDefender', url: 'https://metadefender.opswat.com/results/file/', defaulturl: 'https://metadefender.opswat.com/' },
+                { name: 'ReversingLabs', url: 'https://analysis.reversinglabs.com/sample/', defaulturl: 'https://www.reversinglabs.com/' },
+                { name: 'Talos', url: 'https://talosintelligence.com/talos_file_reputation?s=', defaulturl: 'https://talosintelligence.com' },
+                { name: 'ThreatMiner', url: 'https://www.threatminer.org/sample.php?q=', defaulturl: 'https://www.threatminer.org/' },
+                { name: 'Triage', url: 'https://tria.ge/sample/', defaulturl: 'https://tria.ge/' },
+                { name: 'Valhalla', url: 'https://valhalla.nextron-systems.com/sample/', defaulturl: 'https://valhalla.nextron-systems.com/' },
+                { name: 'Valkyrie', url: 'https://verdict.valkyrie.comodo.com/file/result?s=', defaulturl: 'https://verdict.valkyrie.comodo.com/' },
+                { name: 'VirusTotal', url: 'https://www.virustotal.com/gui/file/', defaulturl: 'https://www.virustotal.com/gui/home/search' }
+            ],
+            quick: [
+                { name: 'Browserling', url: 'https://www.browserling.com/' },
+                { name: 'CyberChef', url: 'https://gchq.github.io/CyberChef/'},
+                { name: 'Cylect', url: 'https://cylect.io/'},
+                { name: 'Google', url: 'https://www.google.com'},
+                { name: 'Google Adv Search', url: 'https://www.google.com/advanced_search'},
+                { name: 'Goosint', url: 'https://goosint.com/'},
+                { name: 'Have I Been Pwned', url: 'https://haveibeenpwned.com/' },
+                { name: 'IntelX', url: 'https://intelx.io/' },
+                { name: 'Onyphe', url: 'https://www.onyphe.io/' },
+                { name: 'OSINT Framework ', url: 'https://osintframework.com/' },
+                { name: 'Shodan', url: 'https://www.shodan.io/' },
+                { name: 'ZoomEye', url: 'https://www.zoomeye.org/' }
+            ]
+        };
+
+        const pinned = {
+            ip: [],
+            domain: [],
+            hash: []
+        };
+
+        function createSourceButton(type, source, pinned=false) {
+            const button = document.createElement('button');
+            const link = document.createElement('a');
+            // link.href = `${source.url}${document.getElementById(`${type}-input`).value}`; // Uncomment to remove default URLs
+            const inputValue = document.getElementById(`${type}-input`).value
+            if (inputValue && source.url) {
+                link.href = `${source.url}${inputValue}`;
+            } else {
+                link.href = source.defaulturl;
+            }
+            link.target = '_blank';
+            link.textContent = source.name;
+            button.appendChild(link);
+            
+            const pinButton = document.createElement('button');
+            pinButton.classList.add('pin-button');
+            pinButton.onclick = () => togglePin(type, source);
+            pinButton.classList.add(pinned ? 'minus' : 'plus');
+            button.appendChild(pinButton);
+            return button;
+        }
+
+        function updateLinks(type) {
+            const allList = document.getElementById(`${type}-all-list`);
+            allList.innerHTML = '';
+            sources[type].forEach(source => {
+                const button = createSourceButton(type, source, pinned[type].includes(source));
+                allList.appendChild(button);
+            });
+            updatePinned(type);
+        }
+
+        function togglePin(type, source) {
+            const index = pinned[type].indexOf(source);
+            if (index === -1) {
+                pinned[type].push(source);
+            } else {
+                pinned[type].splice(index, 1);
+            }
+            updatePinned(type);
+            updateLinks(type);
+        }
+
+        function updatePinned(type) {
+            const pinnedList = document.getElementById(`${type}-pinned-list`);
+            pinnedList.innerHTML = '';
+            pinned[type].forEach(source => {
+                const button = createSourceButton(type, source, true);
+                pinnedList.appendChild(button);
+            });
+            const hasPinned = pinned[type].length > 0;
+            document.getElementById(`${type}-open-all-pinned`).style.display = hasPinned ? 'inline-block' : 'none';
+            document.getElementById(`${type}-copy-pinned`).style.display = hasPinned ? 'inline-block' : 'none';
+            document.getElementById(`${type}-no-pinned-message`).style.display = hasPinned ? 'none' : 'inline';
+            document.getElementById(`${type}-pinned-list`).style.display = hasPinned ? 'flex' : 'none';
+        }
+
+        function openAll(type, group) {
+            const targetList = group === 'pinned' ? pinned[type] : sources[type];
+            const inputValue = document.getElementById(`${type}-input`).value;
+            targetList.forEach(source => {
+                const url = inputValue && source.url ? `${source.url}${inputValue}` : source.defaulturl;
+                window.open(url, '_blank');
+            });
+        }
+
+        function copyAll(type, group) {
+            const targetList = group === 'pinned' ? pinned[type] : sources[type];
+            const inputValue = document.getElementById(`${type}-input`).value;
+            const urls = targetList.map(source => {
+                return inputValue && source.url ? `${source.url}${inputValue}` : source.defaulturl;
+            });
+            navigator.clipboard.writeText(urls.join(', '));
+            alert('Copied to clipboard!');
+        }
+
+        function populateQuickLinks() {
+            const quickLinksList = document.getElementById('quick-links-list');
+            sources.quick.forEach(source => {
+                const button = document.createElement('button');
+                const link = document.createElement('a');
+                link.href = source.url;
+                link.target = '_blank';
+                link.textContent = source.name;
+                button.appendChild(link);
+                quickLinksList.appendChild(button);
+            });
+        }
+
+        function toggleMode() {
+            document.body.classList.toggle('light-mode');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateLinks('ip');
+            updateLinks('domain');
+            updateLinks('hash');
+            populateQuickLinks();
+        });
+
+    </script>
+</body>
+</html>
