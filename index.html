@@ -21,7 +21,6 @@
         }
         .nav-bar {
             background-color: #333;
-            /* padding: 10px 20px; */
             padding: 6px 16px;
             display: flex;
             justify-content: space-between;
@@ -45,12 +44,16 @@
             font-weight: bold;
         }
         .nav-title span {
-            font-size: 0.8em;
+            font-size: 0.75em;
             font-weight: normal;
+            white-space: nowrap;
         }
         .nav-links {
             display: flex;
             align-items: center;
+            text-align: center;
+            overflow-x: scroll;
+            padding: 6px 0px;
         }
         .nav-end {
             display: flex;
@@ -377,6 +380,7 @@
                 { name: 'URLScan.io', url: 'https://urlscan.io/domain/', defaulturl: 'https://urlscan.io' },
                 { name: 'Valkyrie', url: 'https://verdict.valkyrie.comodo.com/url/domain/result?domain=', defaulturl: 'https://verdict.valkyrie.comodo.com/' },
                 { name: 'VirusTotal', url: 'https://www.virustotal.com/gui/domain/', defaulturl: 'https://www.virustotal.com/gui/home/search' },
+                { name: 'Wayback Machine', url: 'https://web.archive.org/web/*/', defaulturl: 'https://web.archive.org/' },
                 { name: 'Web of Trust', url: 'https://www.mywot.com/en/scorecard/', defaulturl: 'https://www.mywot.com/' },
                 { name: 'Whois', url: 'https://www.whois.com/whois/', defaulturl: 'https://www.whois.com/whois/' },
                 { name: 'WhoisXML API', url: 'https://whois.whoisxmlapi.com/lookup/', defaulturl: 'https://whois.whoisxmlapi.com/' },
@@ -401,18 +405,31 @@
                 { name: 'VirusTotal', url: 'https://www.virustotal.com/gui/file/', defaulturl: 'https://www.virustotal.com/gui/home/search' }
             ],
             quick: [
+                { name: 'Bing', url: 'https://www.bing.com/' },
+                { name: 'Blockchain', url: 'https://www.blockchain.com/explorer' },
                 { name: 'Browserling', url: 'https://www.browserling.com/' },
+                { name: 'ChatGPT', url: 'https://chatgpt.com/' },
+                { name: 'Copilot', url: 'https://copilot.microsoft.com/' },
                 { name: 'CyberChef', url: 'https://gchq.github.io/CyberChef/'},
                 { name: 'Cylect', url: 'https://cylect.io/'},
+                { name: 'DuckDuckGo', url: 'https://duckduckgo.com/'},
+                { name: 'Gemini', url: 'https://gemini.google.com/'},
                 { name: 'Google', url: 'https://www.google.com'},
                 { name: 'Google Adv Search', url: 'https://www.google.com/advanced_search'},
+                { name: 'Google Images', url: 'https://images.google.com/'},
                 { name: 'Goosint', url: 'https://goosint.com/'},
                 { name: 'Have I Been Pwned', url: 'https://haveibeenpwned.com/' },
                 { name: 'IntelX', url: 'https://intelx.io/' },
+                { name: 'LinkedIn', url: 'https://www.linkedin.com/' },
                 { name: 'Onyphe', url: 'https://www.onyphe.io/' },
-                { name: 'OSINT Framework ', url: 'https://osintframework.com/' },
+                { name: 'OSINT Framework', url: 'https://osintframework.com/' },
+                { name: 'Pastebin', url: 'https://pastebin.com/' },
+                { name: 'Perplexity', url: 'https://www.perplexity.ai/' },
                 { name: 'Shodan', url: 'https://www.shodan.io/' },
-                { name: 'ZoomEye', url: 'https://www.zoomeye.org/' }
+                { name: 'URL Shortener', url: 'https://www.shorturl.at/' },
+                { name: 'Wayback Machine', url: 'https://web.archive.org/' },
+                { name: 'ZoomEye', url: 'https://www.zoomeye.org/' }, 
+                { name: 'QR Code scanner', url: 'https://4qrcode.com/scan-qr-code.php' }
             ]
         };
 
